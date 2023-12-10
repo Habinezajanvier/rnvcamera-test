@@ -11,6 +11,7 @@ import {
   Camera,
   useCameraDevice,
   CameraPermissionStatus,
+  useCodeScanner,
 } from 'react-native-vision-camera';
 
 function App() {
@@ -24,6 +25,13 @@ function App() {
     useState<CameraPermissionStatus>('not-determined');
   const [microphonePermissionStatus, setMicrophonePermissionStatus] =
     useState<CameraPermissionStatus>('not-determined');
+
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13'],
+    onCodeScanned: codes => {
+      console.log(`Scanned ${codes.length} codes!`, codes);
+    },
+  });
 
   useEffect(() => {
     Camera.getCameraPermissionStatus().then(setCameraPermission);
@@ -48,7 +56,12 @@ function App() {
       </View>
     );
   return (
-    <Camera style={StyleSheet.absoluteFill} device={device} isActive={true} />
+    <Camera
+      style={StyleSheet.absoluteFill}
+      device={device}
+      isActive={true}
+      codeScanner={codeScanner}
+    />
   );
 }
 
